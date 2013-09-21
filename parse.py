@@ -64,10 +64,16 @@ def print_company_info(company, deadline = False, materials = False):
         try:
             deadline = company.find('position').find('deadline').text.strip()
             date_obj = str2date(deadline)
-            if date_obj > datetime.datetime.now() + datetime.timedelta(days=7):
+            if date_obj > datetime.datetime.now() + datetime.timedelta(days=14):
                 deadline = termcolor.colored(deadline, 'green')
-            else:
+            elif (date_obj > datetime.datetime.now() +
+                  datetime.timedelta(days=7)):
+                deadline = termcolor.colored(deadline, 'blue')
+            elif (date_obj > datetime.datetime.now() +
+                  datetime.timedelta(days=3)):
                 deadline = termcolor.colored(deadline, 'yellow')
+            else:
+                deadline = termcolor.colored(deadline, 'red')
             print("    Deadline: {0}".format(str(deadline)))
         except AttributeError:
             pass
