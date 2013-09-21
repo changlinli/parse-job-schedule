@@ -1,6 +1,9 @@
 import sys
 import getopt
 import xml.etree.ElementTree as ET
+import colorama
+import termcolor
+import datetime
 
 USEAGE = \
 """
@@ -41,7 +44,7 @@ def gen_companies(filename):
 
     return companies_partition
 
-def print_company_info(company):
+def print_company_info(company, deadline = False, materials = False):
     """
     Print the required materials and deadline associated with the company.
     """
@@ -50,19 +53,40 @@ def print_company_info(company):
     except AttributeError:
         company_position_name = ""
     print("{0} - {1}".format(company.find('name').text, company_position_name))
-    try:
-        materials = [element.text for element in
-                     company.find('position').find('materials').findall('item')]
-        print("    Requirements: {0}".format(str(materials)))
-    except AttributeError:
-        pass
-    try:
-        deadline = company.find('position').find('deadline').text.strip()
-        print("    Deadline: {0}".format(str(deadline)))
-    except AttributeError:
-        pass
+    if materials == True:
+        try:
+            materials = [element.text for element in
+                         company.find('position').find('materials').findall('item')]
+            print("    Requirements: {0}".format(str(materials)))
+        except AttributeError:
+            pass
+    if deadline == True:
+        try:
+            deadline = company.find('position').find('deadline').text.strip()
+            date_obj = str2date(deadline)
+            if date_obj > datetime.datetime.now() + datetime.timedelta(days=7):
+                deadline = termcolor.colored(deadline, 'green')
+            else:
+                deadline = termcolor.colored(deadline, 'yellow')
+            print("    Deadline: {0}".format(str(deadline)))
+        except AttributeError:
+            pass
 
+def str2date(input_string):
+    try:
+        return datetime.datetime.strptime(input_string, "%B %d, %Y")
+    except ValueError:
+        pass
+    try:
+        return datetime.datetime.strptime(input_string, "%b %d, %Y")
+    except ValueError:
+        return datetime.datetime.strptime("Dec 12, 2013", "%b %d, %Y")
+
+###############################################################################
+## Main Program starts here!
+###############################################################################
 if __name__ == "__main__":
+    colorama.init()
     argv = sys.argv[1:]
 
     try:
@@ -81,9 +105,9 @@ if __name__ == "__main__":
     print("Already Applied:")
     print("----------------\n")
     for company in already_applied:
-        print(company.find('name').text)
+        print_company_info(company)
     print("\n================\n")
     print("Not Yet Applied:")
     print("----------------\n")
     for company in not_yet_applied:
-        print_company_info(company)
+        print_company_info(company, deadline = True, materials = True)

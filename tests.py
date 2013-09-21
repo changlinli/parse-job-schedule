@@ -20,5 +20,17 @@ class TestParse(unittest.TestCase):
         already_applied = companies_partition[0]
         self.assertEqual(already_applied[0].find('name').text, 'Blah2')
 
+    def test_str2date_on_nonabbreviated_month_full_year(self):
+        date = parse.str2date("January 31, 2013")
+        self.assertEqual(date.month, 1)
+        self.assertEqual(date.year, 2013)
+        self.assertEqual(date.day, 31)
+
+    def test_str2date_on_abbreviated_month_full_year(self):
+        date = parse.str2date("Jan 31, 2013")
+        self.assertEqual(date.month, 1)
+        self.assertEqual(date.year, 2013)
+        self.assertEqual(date.day, 31)
+
 if __name__ == "__main__":
     unittest.main()
