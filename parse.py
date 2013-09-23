@@ -132,7 +132,7 @@ if __name__ == "__main__":
         sys.exit(3)
 
     color_status = False
-    if '-c' in opts[0]:
+    if opts != [] and '-c' in opts[0]:
         color_status = True
 
     companies_partition = gen_companies(args[0])
