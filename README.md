@@ -31,6 +31,11 @@ Installation occurs as with most Python projects, simply by calling virtualenv
 on this repository after `git clone`ing it and then running `pip install -r
 requirements.txt` within the highest directory level of the repository.
 
+Other than the requirements listed in `requirements.txt` it is also worth noting
+that this script was developed using Python 3.3. It _may_ work on recent versions
+of Python 2.x (i.e. various versions of 2.7) and should work on other versions
+of Python 3.x.
+
 Why make this?
 --------------
 
