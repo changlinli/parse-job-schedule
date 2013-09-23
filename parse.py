@@ -1,3 +1,25 @@
+"""
+A simple script for parsing an XML file containing job applications and the
+schedule I need to adhere to use them.
+
+Usage:
+
+    parse.py [-c] filename
+
+Arguments:
+
+    filename    The XML file containing the company names I wish to apply for
+
+Optional Arguments:
+
+    -c          Optional argument for color output (will highlight different
+    companies depending on how close the deadlines are)
+
+Example:
+
+    python parse.py -c test_application.xml
+
+"""
 import sys
 import getopt
 import xml.etree.ElementTree as ET
@@ -5,12 +27,7 @@ import colorama
 import termcolor
 import datetime
 
-USEAGE = \
-"""
-Useage:
-parse.py filename
-filename: The XML file containing the company names I wish to apply for
-"""
+USAGE = __doc__
 
 def binary_partition(input_list, predicate):
     """
@@ -102,7 +119,7 @@ if __name__ == "__main__":
         sys.exit(2)
     if len(args) == 0:
         print("Give me an argument!")
-        print(USEAGE.strip())
+        print(USAGE.strip())
         sys.exit(3)
 
     companies_partition = gen_companies(args[0])
