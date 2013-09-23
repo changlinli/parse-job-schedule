@@ -61,7 +61,10 @@ def gen_companies(filename):
 
     return companies_partition
 
-def print_company_info(company, deadline = False, materials = False):
+def print_company_info(company,
+                       deadline = False,
+                       materials = False,
+                       color = False):
     """
     Print the required materials and deadline associated with the company.
     """
@@ -70,6 +73,7 @@ def print_company_info(company, deadline = False, materials = False):
     except AttributeError:
         company_position_name = ""
     print("{0} - {1}".format(company.find('name').text, company_position_name))
+
     if materials == True:
         try:
             materials = [element.text for element in
@@ -77,23 +81,27 @@ def print_company_info(company, deadline = False, materials = False):
             print("    Requirements: {0}".format(str(materials)))
         except AttributeError:
             pass
+
     if deadline == True:
         try:
             deadline = company.find('position').find('deadline').text.strip()
-            date_obj = str2date(deadline)
-            if date_obj > datetime.datetime.now() + datetime.timedelta(days=14):
-                deadline = termcolor.colored(deadline, 'green')
-            elif (date_obj > datetime.datetime.now() +
-                  datetime.timedelta(days=7)):
-                deadline = termcolor.colored(deadline, 'blue')
-            elif (date_obj > datetime.datetime.now() +
-                  datetime.timedelta(days=3)):
-                deadline = termcolor.colored(deadline, 'yellow')
-            else:
-                deadline = termcolor.colored(deadline, 'red')
-            print("    Deadline: {0}".format(str(deadline)))
+            if color == True:
+                date_obj = str2date(deadline)
+                if (date_obj > datetime.datetime.now() +
+                    datetime.timedelta(days=14)):
+                    deadline = termcolor.colored(deadline, 'green')
+                elif (date_obj > datetime.datetime.now() +
+                      datetime.timedelta(days=7)):
+                    deadline = termcolor.colored(deadline, 'blue')
+                elif (date_obj > datetime.datetime.now() +
+                      datetime.timedelta(days=3)):
+                    deadline = termcolor.colored(deadline, 'yellow')
+                else:
+                    deadline = termcolor.colored(deadline, 'red')
         except AttributeError:
-            pass
+            deadline = "Not Given"
+
+    print("    Deadline: {0}".format(str(deadline)))
 
 def str2date(input_string):
     try:
@@ -113,14 +121,19 @@ if __name__ == "__main__":
     argv = sys.argv[1:]
 
     try:
-        opts, args = getopt.getopt(argv, "ad", ["argh"])
+        opts, args = getopt.getopt(argv, "c")
     except getopt.GetoptError:
         print("Oops something went wrong!")
         sys.exit(2)
+
     if len(args) == 0:
         print("Give me an argument!")
         print(USAGE.strip())
         sys.exit(3)
+
+    color_status = False
+    if '-c' in opts[0]:
+        color_status = True
 
     companies_partition = gen_companies(args[0])
     already_applied = companies_partition[0]
@@ -133,4 +146,7 @@ if __name__ == "__main__":
     print("Not Yet Applied:")
     print("----------------\n")
     for company in not_yet_applied:
-        print_company_info(company, deadline = True, materials = True)
+        print_company_info(company,
+                           deadline = True,
+                           materials = True,
+                           color = color_status)
