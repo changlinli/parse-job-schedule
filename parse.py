@@ -52,6 +52,12 @@ def binary_partition(input_list, predicate):
     Positional Arguments:
     input_list -- The list we wish to partition
     predicate -- The boolean function which we wish to use for the partition
+
+    Example:
+
+    >>> binary_partition([1, 2, 3], lambda x: x < 3)
+    [[1, 2], [3]]
+
     """
     first_partition = []
     second_partition = []
@@ -119,6 +125,10 @@ def print_company_info(company,
     print("    Deadline: {0}".format(str(deadline)))
 
 def str2date(input_string):
+    """
+    Custom wrapper around normal strptime function that specifically deals with
+    the formats we expect our data to be in.
+    """
     try:
         return datetime.datetime.strptime(input_string, "%B %d, %Y")
     except ValueError:
